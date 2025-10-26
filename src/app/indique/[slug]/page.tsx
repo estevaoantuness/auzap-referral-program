@@ -14,40 +14,28 @@ interface PageProps {
   params: { slug: string };
 }
 
-// Mock function - will be replaced with real DB call
+import { prisma } from "@/lib/db/prisma";
+
 async function getPartnerBySlug(slug: string) {
-  // TODO: Replace with actual Prisma query
-  // const partner = await prisma.partner.findUnique({
-  //   where: { slug, isActive: true }
-  // });
+  try {
+    const partner = await prisma.partner.findUnique({
+      where: { slug, isActive: true },
+      select: {
+        name: true,
+        slug: true,
+        city: true,
+        state: true,
+        photoUrl: true,
+        testimonial: true,
+        referralCode: true,
+      },
+    });
 
-  // Mock data for development
-  const mockPartners: Record<string, any> = {
-    "joao-silva": {
-      name: "João Silva",
-      slug: "joao-silva",
-      city: "São Paulo",
-      state: "SP",
-      photoUrl: null,
-      testimonial:
-        "O AuZap revolucionou meu petshop! Consegui aumentar minhas vendas em 45% nos primeiros 3 meses.",
-      referralCode: "JOAO2024",
-      isActive: true,
-    },
-    "maria-santos": {
-      name: "Maria Santos",
-      slug: "maria-santos",
-      city: "Rio de Janeiro",
-      state: "RJ",
-      photoUrl: null,
-      testimonial:
-        "Sistema incrível! Meus clientes adoram o atendimento automatizado e eu economizo muito tempo.",
-      referralCode: "MARIA2024",
-      isActive: true,
-    },
-  };
-
-  return mockPartners[slug] || null;
+    return partner;
+  } catch (error) {
+    console.error("Error fetching partner:", error);
+    return null;
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
