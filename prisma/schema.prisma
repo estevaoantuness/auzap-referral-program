@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(PARTNER)
+  partnerId String?  @unique
+  partner   Partner? @relation(fields: [partnerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Partner {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  email         String      @unique
+  phone         String
+  city          String
+  state         String
+  photoUrl      String?
+  testimonial   String?
+  referralCode  String      @unique
+  isActive      Boolean     @default(true)
+  user          User?
+  referrals     Referral[]
+  rewards       Reward[]
+  analytics     Analytics[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([slug])
+  @@index([referralCode])
+}
+
+model Referral {
+  id              String         @id @default(cuid())
+  partnerId       String
+  partner         Partner        @relation(fields: [partnerId], references: [id])
+  status          ReferralStatus @default(PENDING)
+  referredName    String
+  referredEmail   String
+  referredPhone   String
+  referredCity    String
+  referredState   String
+  referredCompany String
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  ipAddress       String?
+  userAgent       String?
+  referredAt      DateTime       @default(now())
+  convertedAt     DateTime?
+  cancelledAt     DateTime?
+  cancelReason    String?
+  notes           String?
+
+  @@index([partnerId])
+  @@index([status])
+  @@index([referredEmail])
+}
+
+model Reward {
+  id              String       @id @default(cuid())
+  partnerId       String
+  partner         Partner      @relation(fields: [partnerId], references: [id])
+  referralCount   Int
+  rewardType      RewardType
+  discountPercent Int
+  monthsDuration  Int
+  status          RewardStatus @default(PENDING)
+  unlockedAt      DateTime     @default(now())
+  appliedAt       DateTime?
+  expiresAt       DateTime?
+
+  @@index([partnerId])
+  @@index([status])
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  partnerId String
+  partner   Partner  @relation(fields: [partnerId], references: [id])
+  eventType String
+  eventData Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([partnerId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+enum Role {
+  ADMIN
+  PARTNER
+}
+
+enum ReferralStatus {
+  PENDING
+  CONTACTED
+  CONVERTED
+  CANCELLED
+}
+
+enum RewardType {
+  DISCOUNT_10
+  DISCOUNT_20
+  DISCOUNT_30
+  DISCOUNT_50_6M
+  FREE_6M_VIP
+}
+
+enum RewardStatus {
+  PENDING
+  APPLIED
+  EXPIRED
+}
