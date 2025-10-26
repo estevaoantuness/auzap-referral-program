@@ -162,17 +162,19 @@ npm run db:studio    # Abre Prisma Studio
 npm run db:seed      # Popula banco com dados de teste
 ```
 
-## 🎨 Usando o Lovable
+## 🎨 Componentes da Landing Page
 
-Este projeto utiliza [Lovable](https://lovable.dev) para acelerar a criação de componentes visuais da landing page.
+Todos os componentes da landing page foram criados do zero, otimizados para Next.js 14:
 
-**Passo a passo:**
-
-1. Abra o arquivo `LOVABLE_PROMPT.md`
-2. Copie o prompt completo
-3. Cole no Lovable e gere os componentes
-4. Copie os componentes gerados
-5. Adapte para Next.js 14 (instruções no arquivo)
+- HeroSection - Seção hero personalizada com dados do parceiro
+- SocialProof - Contadores animados com estatísticas
+- BenefitsGrid - Grid de benefícios com animações
+- FeaturedTestimonial - Depoimento em destaque
+- HowItWorks - Timeline de como funciona
+- PricingCard - Card de preços com destaque de desconto
+- FAQ - Accordion de perguntas frequentes
+- ReferralForm - Formulário completo com validações
+- Footer - Rodapé com links e redes sociais
 
 ## 🗄️ Schema do Banco de Dados
 
